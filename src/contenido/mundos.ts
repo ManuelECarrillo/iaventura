@@ -22,7 +22,16 @@ export const MUNDOS: Mundo[] = [
       { id: "m2-l5", em: "👑", nombre: "Jefe del bosque", minutos: 5, jefe: true },
     ],
   },
-  { id: 3, em: "🏙️", nombre: "Ciudad Prompt", historia: "El arte de dar buenas órdenes", gratis: false, lecciones: [] },
+  {
+    id: 3, em: "🏙️", nombre: "Ciudad Prompt", historia: "El arte de dar buenas órdenes", gratis: false,
+    lecciones: [
+      { id: "m3-l1", em: "📣", nombre: "Órdenes claras", minutos: 4 },
+      { id: "m3-l2", em: "🧭", nombre: "Dale contexto", minutos: 4 },
+      { id: "m3-l3", em: "🎯", nombre: "Enséñale con ejemplos", minutos: 4 },
+      { id: "m3-l4", em: "🎭", nombre: "Dile quién es", minutos: 4 },
+      { id: "m3-l5", em: "👑", nombre: "Jefe de la ciudad", minutos: 5, jefe: true },
+    ],
+  },
   { id: 4, em: "🌫️", nombre: "Pantano de los Espejismos", historia: "¿Verdad o invento de la IA?", gratis: false, lecciones: [] },
   { id: 5, em: "🏰", nombre: "Fortaleza Guardiana", historia: "Cuidar secretos y datos", gratis: false, lecciones: [] },
   { id: 6, em: "🎨", nombre: "Estudio Creativo", historia: "Dibujos, cuentos y música con IA", gratis: false, lecciones: [] },

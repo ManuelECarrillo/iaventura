@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Cabecera, Nav, useToast } from "@/components/Ui";
 import { MUNDOS, ORDEN } from "@/contenido/mundos";
-import { diasSemana, leccionesHoy, TOPE_DIARIO, useAvance } from "@/lib/avance";
+import { diasSemana, leccionesHoy, MODO_PRUEBA, TOPE_DIARIO, useAvance } from "@/lib/avance";
 import type { Avance } from "@/lib/tipos";
 
 const LETRAS = ["L", "M", "M", "J", "V", "S", "D"];
@@ -34,14 +34,14 @@ export default function Mapa() {
         </div>
         <div className="bateria">
           <span className="pilas" aria-hidden="true">{Array.from({ length: TOPE_DIARIO }, (_, i) => <i key={i} className={i < bateria ? "" : "no"} />)}</span>
-          <span>{bateria > 0 ? `Batería de Bit: ${bateria} ${bateria === 1 ? "lección" : "lecciones"} más hoy` : "Bit está recargando. ¡Mañana seguimos!"}</span>
+          <span>{MODO_PRUEBA ? "Batería de Bit: ¡ilimitada! (modo de pruebas)" : bateria > 0 ? `Batería de Bit: ${bateria} ${bateria === 1 ? "lección" : "lecciones"} más hoy` : "Bit está recargando. ¡Mañana seguimos!"}</span>
         </div>
 
         {MUNDOS.filter((m) => m.lecciones.length).map((m, mi) => (
-          <section key={m.id} className={"mundo" + (mi % 2 ? " verde" : "")}>
+          <section key={m.id} className={"mundo " + ["", "verde", "lila", "gris", "rosa", "menta", "noche"][m.id - 1]}>
             <div className="mundo-cab">
               <div><h2>{m.em} {m.nombre}</h2><p>Mundo {m.id} · {m.historia}</p></div>
-              <span className="etq">Gratis</span>
+              <span className={"etq" + (m.gratis ? "" : " fam")}>{m.gratis ? "Gratis" : "Familia"}</span>
             </div>
             <div className="camino">
               {m.lecciones.map((l) => {
@@ -65,10 +65,10 @@ export default function Mapa() {
 
         <div className="otros">
           {MUNDOS.filter((m) => !m.lecciones.length).map((m) => (
-            <button type="button" key={m.id} className="otro" onClick={() => toast("Llega con el plan Familia. Pídeselo a un adulto en Papás.")}>
+            <button type="button" key={m.id} className="otro" onClick={() => toast("Este mundo todavía se está construyendo")}>
               <span className="em">{m.em}</span>
               <span className="t">Mundo {m.id} · {m.nombre}<small>{m.historia}</small></span>
-              <span className="etq fam">Familia</span>
+              <span className="etq prox">Pronto</span>
             </button>
           ))}
         </div>

@@ -74,7 +74,7 @@ export default function Papas() {
               <ul>
                 <li>No pedimos nombre, correo ni foto del niño. El avance se guarda solo en este celular.</li>
                 <li>En la app no chatea con una IA real: todo lo que dice Bit está escrito y revisado por nosotros.</li>
-                <li>Máximo 3 lecciones al día, para que aprenda sin pasar horas en la pantalla.</li>
+                <li>Máximo 5 lecciones al día, para que aprenda sin pasar horas en la pantalla (apagado mientras la app está en pruebas).</li>
                 <li>Sin anuncios y sin compras escondidas.</li>
               </ul>
             </div>
@@ -83,7 +83,7 @@ export default function Papas() {
               <div className="precio"><b>Gratis</b><span>Mundos 1 y 2 completos</span></div>
               <div className="precio"><b>Familia · 69 MXN/mes</b><span>o 499 al año · hasta 3 niños</span></div>
               <div className="precio"><b>Lanzamiento · 299 MXN</b><span>pago único, para siempre</span></div>
-              <p style={{ margin: "8px 0 0", fontWeight: 600, color: "var(--tinta2)" }}>Los mundos 3 al 7 están en construcción. Si quieren apartar el precio de lanzamiento, escríbannos.</p>
+              <p style={{ margin: "8px 0 0", fontWeight: 600, color: "var(--tinta2)" }}>Mientras la app está en pruebas, todos los mundos listos se pueden jugar gratis. Si quieren apartar el precio de lanzamiento, escríbannos.</p>
             </div>
             <div className="cuatro">
               <InstalarApp />

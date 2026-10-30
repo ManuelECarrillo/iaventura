@@ -5,7 +5,9 @@ import type { Avance } from "./tipos";
 
 // El avance vive en el celular (localStorage). Sin cuentas ni datos del niño.
 const CLAVE = "iaventura-v1";
-export const TOPE_DIARIO = 3;
+export const TOPE_DIARIO = 5;
+// Mientras estamos en pruebas, la batería de Bit no se acaba. Poner en false para activar el tope diario.
+export const MODO_PRUEBA = true;
 
 export const ACCESORIOS: { id: string; em: string; nombre: string; min: number }[] = [
   { id: "antena", em: "📡", nombre: "Antena", min: 0 },
@@ -41,6 +43,7 @@ export function guardar(a: Avance) {
 
 /** Lecciones que todavía se pueden jugar hoy (tope diario). */
 export function leccionesHoy(a: Avance) {
+  if (MODO_PRUEBA) return TOPE_DIARIO;
   return a.hoy.dia === claveDia() ? Math.max(0, TOPE_DIARIO - a.hoy.lecciones) : TOPE_DIARIO;
 }
 

@@ -8,7 +8,7 @@ import Confeti from "@/components/Confeti";
 import { Hoja } from "@/components/Ui";
 import { CartaPaso, Chuecos, Duelo, Entrena, Historia, IaONo, Orden, Pasos, Secretos, Verdad } from "@/components/minijuegos/Minijuegos";
 import { carta } from "@/contenido/cartas";
-import { ACCESORIOS, leccionesHoy, terminarLeccion, useAvance } from "@/lib/avance";
+import { ACCESORIOS, leccionesHoy, MODO_PRUEBA, terminarLeccion, useAvance } from "@/lib/avance";
 import { sonido } from "@/lib/sonido";
 import type { Leccion, Paso } from "@/lib/tipos";
 
@@ -30,7 +30,7 @@ export default function Jugar({ leccion, siguiente }: { leccion: Leccion; siguie
       <div className="leccion"><div className="lec-in"><div className="cansado">
         <Bit animo="ups" color={a.color} acc={a.acc} />
         <h2>Bit se quedó sin batería 🔋</h2>
-        <p style={{ fontWeight: 700, color: "var(--tinta2)", margin: 0 }}>Hoy ya jugaste 3 lecciones. ¡Eso es mucho aprender! Bit se recarga en la noche y mañana te espera.</p>
+        <p style={{ fontWeight: 700, color: "var(--tinta2)", margin: 0 }}>Hoy ya jugaste 5 lecciones. ¡Eso es mucho aprender! Bit se recarga en la noche y mañana te espera.</p>
         <Link href="/" className="boton uva">Volver al mapa</Link>
       </div></div></div>
     );
@@ -116,7 +116,7 @@ function Final({ leccion, final, siguiente, color, acc }: {
         <div className="mision"><small>Misión de la vida real</small>{leccion.mision}</div>
       )}
       <p style={{ margin: 0, fontWeight: 700, color: "var(--tinta2)" }}>
-        🔋 {final.quedan > 0 ? `A Bit le ${final.quedan === 1 ? "queda 1 lección" : `quedan ${final.quedan} lecciones`} de batería por hoy.` : "Bit se quedó sin batería. ¡Mañana seguimos!"}
+        🔋 {MODO_PRUEBA ? "Batería ilimitada: ¡sigue jugando!" : final.quedan > 0 ? `A Bit le ${final.quedan === 1 ? "queda 1 lección" : `quedan ${final.quedan} lecciones`} de batería por hoy.` : "Bit se quedó sin batería. ¡Mañana seguimos!"}
       </p>
       <div className="abajo">
         {siguiente && final.quedan > 0 && <Link href={`/leccion/${siguiente}`} className="boton">Siguiente lección</Link>}

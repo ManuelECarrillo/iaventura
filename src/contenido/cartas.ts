@@ -17,7 +17,10 @@ export const CARTAS: Carta[] = [
   { id: "etiqueta", em: "🏷️", t: "Etiqueta", d: "El nombre que le ponemos a un ejemplo para que la IA sepa qué es: 'perro', 'gato'.", mundo: 2 },
   { id: "sesgo", em: "⚖️", t: "Sesgo", d: "Cuando la IA es injusta o se equivoca con alguien porque aprendió de datos incompletos.", mundo: 2 },
   // Mundos que siguen (se ganan en la app completa)
+  { id: "instruccion", em: "📣", t: "Instrucción clara", d: "Decirle a la IA exactamente qué quieres, paso por paso, sin dejarla adivinar.", mundo: 3 },
   { id: "contexto", em: "🧭", t: "Contexto", d: "La información extra que le das a la IA para que entienda mejor qué quieres.", mundo: 3 },
+  { id: "ejemplo", em: "🎯", t: "Ejemplo", d: "Mostrarle a la IA una muestra de cómo quieres el resultado. Con un ejemplo, acierta más.", mundo: 3 },
+  { id: "rol", em: "🎭", t: "Rol", d: "Decirle a la IA quién debe ser: 'actúa como maestra de ciencias'. Así responde como esa persona.", mundo: 3 },
   { id: "iterar", em: "🔁", t: "Iterar", d: "Pedir, mirar el resultado y volver a pedir mejor. Así se consiguen buenas respuestas.", mundo: 3 },
   { id: "fuente", em: "📚", t: "Fuente", d: "De dónde sale una información. Una buena fuente se puede revisar.", mundo: 4 },
   { id: "deepfake", em: "🎭", t: "Deepfake", d: "Un video o foto falsos hechos con IA que parecen reales. ¡Ojo!", mundo: 4 },
