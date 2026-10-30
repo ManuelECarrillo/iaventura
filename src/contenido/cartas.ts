@@ -22,8 +22,11 @@ export const CARTAS: Carta[] = [
   { id: "ejemplo", em: "🎯", t: "Ejemplo", d: "Mostrarle a la IA una muestra de cómo quieres el resultado. Con un ejemplo, acierta más.", mundo: 3 },
   { id: "rol", em: "🎭", t: "Rol", d: "Decirle a la IA quién debe ser: 'actúa como maestra de ciencias'. Así responde como esa persona.", mundo: 3 },
   { id: "iterar", em: "🔁", t: "Iterar", d: "Pedir, mirar el resultado y volver a pedir mejor. Así se consiguen buenas respuestas.", mundo: 3 },
+  // Mundo 4 · Pantano de los Espejismos
+  { id: "verificar", em: "🔍", t: "Verificar", d: "Revisar si algo es cierto comparándolo con una fuente confiable antes de creerlo.", mundo: 4 },
   { id: "fuente", em: "📚", t: "Fuente", d: "De dónde sale una información. Una buena fuente se puede revisar.", mundo: 4 },
-  { id: "deepfake", em: "🎭", t: "Deepfake", d: "Un video o foto falsos hechos con IA que parecen reales. ¡Ojo!", mundo: 4 },
+  { id: "deepfake", em: "🪞", t: "Deepfake", d: "Un video o foto falsos hechos con IA que parecen reales. ¡Ojo!", mundo: 4 },
+  { id: "fake", em: "📰", t: "Noticia falsa", d: "Una noticia inventada para que la compartas rápido. Se revisa antes de creerla.", mundo: 4 },
   { id: "privacidad", em: "🔒", t: "Privacidad", d: "Cuidar tus datos: hay cosas que no se le cuentan a ninguna IA.", mundo: 5 },
   { id: "generativa", em: "🎨", t: "IA generativa", d: "Una IA que crea cosas nuevas: dibujos, cuentos, música.", mundo: 6 },
   { id: "chatbot", em: "🤖", t: "Chatbot", d: "Una IA con la que puedes platicar escribiendo o hablando.", mundo: 6 },

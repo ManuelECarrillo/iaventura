@@ -32,7 +32,16 @@ export const MUNDOS: Mundo[] = [
       { id: "m3-l5", em: "👑", nombre: "Jefe de la ciudad", minutos: 5, jefe: true },
     ],
   },
-  { id: 4, em: "🌫️", nombre: "Pantano de los Espejismos", historia: "¿Verdad o invento de la IA?", gratis: false, lecciones: [] },
+  {
+    id: 4, em: "🌫️", nombre: "Pantano de los Espejismos", historia: "¿Verdad o invento de la IA?", gratis: false,
+    lecciones: [
+      { id: "m4-l1", em: "🌀", nombre: "¿Verdad o invento?", minutos: 4 },
+      { id: "m4-l2", em: "📚", nombre: "Busca la fuente", minutos: 4 },
+      { id: "m4-l3", em: "🪞", nombre: "Fotos que mienten", minutos: 4 },
+      { id: "m4-l4", em: "📰", nombre: "Noticias falsas", minutos: 4 },
+      { id: "m4-l5", em: "👑", nombre: "Jefe del pantano", minutos: 5, jefe: true },
+    ],
+  },
   { id: 5, em: "🏰", nombre: "Fortaleza Guardiana", historia: "Cuidar secretos y datos", gratis: false, lecciones: [] },
   { id: 6, em: "🎨", nombre: "Estudio Creativo", historia: "Dibujos, cuentos y música con IA", gratis: false, lecciones: [] },
   { id: 7, em: "🗼", nombre: "Torre de los Superpoderes", historia: "Usar la IA para estudiar y crear", gratis: false, lecciones: [] },
