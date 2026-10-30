@@ -31,8 +31,11 @@ export const CARTAS: Carta[] = [
   { id: "privacidad", em: "🔒", t: "Privacidad", d: "Cuidar tus datos: hay cosas que no se le cuentan a ninguna IA.", mundo: 5 },
   { id: "contrasena", em: "🔑", t: "Contraseña", d: "La llave secreta de tus cuentas. No se le dice a nadie, ni a una IA. Solo a tus papás.", mundo: 5 },
   { id: "permiso", em: "🙋", t: "Pedir permiso", d: "Antes de usar una IA nueva, mandar una foto o comprar algo, se le pregunta a un adulto de confianza.", mundo: 5 },
+  // Mundo 6 · Estudio Creativo
   { id: "generativa", em: "🎨", t: "IA generativa", d: "Una IA que crea cosas nuevas: dibujos, cuentos, música.", mundo: 6 },
+  { id: "imagen", em: "🖼️", t: "Generador de imágenes", d: "Una IA que dibuja lo que le describes con palabras. Entre más detalles, más se parece a lo que imaginas.", mundo: 6 },
   { id: "chatbot", em: "🤖", t: "Chatbot", d: "Una IA con la que puedes platicar escribiendo o hablando.", mundo: 6 },
+  { id: "autor", em: "✍️", t: "Autor", d: "La persona que hace una obra. Si una IA te ayudó, se dice. Copiar el trabajo de otro sin decirlo no se vale.", mundo: 6 },
 ];
 
 export function carta(id: string): Carta {

@@ -52,7 +52,16 @@ export const MUNDOS: Mundo[] = [
       { id: "m5-l5", em: "👑", nombre: "Jefe de la fortaleza", minutos: 5, jefe: true },
     ],
   },
-  { id: 6, em: "🎨", nombre: "Estudio Creativo", historia: "Dibujos, cuentos y música con IA", gratis: false, lecciones: [] },
+  {
+    id: 6, em: "🎨", nombre: "Estudio Creativo", historia: "Dibujos, cuentos y música con IA", gratis: false,
+    lecciones: [
+      { id: "m6-l1", em: "🎨", nombre: "La IA que crea", minutos: 4 },
+      { id: "m6-l2", em: "🖼️", nombre: "Pinta con palabras", minutos: 4 },
+      { id: "m6-l3", em: "📖", nombre: "Cuentos con Bit", minutos: 4 },
+      { id: "m6-l4", em: "✍️", nombre: "¿De quién es la obra?", minutos: 4 },
+      { id: "m6-l5", em: "👑", nombre: "Jefe del estudio", minutos: 5, jefe: true },
+    ],
+  },
   { id: 7, em: "🗼", nombre: "Torre de los Superpoderes", historia: "Usar la IA para estudiar y crear", gratis: false, lecciones: [] },
 ];
 
