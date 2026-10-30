@@ -24,18 +24,45 @@ export function sonido(tipo: "bien" | "mal" | "carta" | "toque") {
   } catch {}
 }
 
+let reproduciendo: HTMLAudioElement | null = null;
+
+/** Las cartas tienen voz grabada (ElevenLabs, en public/voz/cartas). Si falta el archivo, lee el navegador. */
+export function hablarCarta(c: { id: string; t: string; d: string }) {
+  try {
+    window.speechSynthesis?.cancel();
+    reproduciendo?.pause();
+    const a = new Audio(`/voz/cartas/${c.id}.mp3`);
+    reproduciendo = a;
+    a.play().catch(() => hablar(c.t + ". " + c.d));
+    a.onerror = () => hablar(c.t + ". " + c.d);
+  } catch {
+    hablar(c.t + ". " + c.d);
+  }
+}
+
+/** Elige la voz menos robótica que tenga el celular: primero las "naturales" de Google/Microsoft en español. */
+function mejorVoz(voces: SpeechSynthesisVoice[]) {
+  const es = voces.filter((v) => /^es/i.test(v.lang));
+  const puntos = (v: SpeechSynthesisVoice) =>
+    (/natural|neural|premium|enhanced/i.test(v.name) ? 8 : 0) +
+    (/google/i.test(v.name) ? 4 : 0) +
+    (/MX/i.test(v.lang) ? 3 : /US|419/i.test(v.lang) ? 2 : 0) +
+    (v.localService ? 0 : 1);
+  return es.sort((a, b) => puntos(b) - puntos(a))[0];
+}
+
 export function hablar(texto: string) {
   try {
     const sy = window.speechSynthesis;
     if (!sy) return false;
     sy.cancel();
+    reproduciendo?.pause();
     const u = new SpeechSynthesisUtterance(texto.replace(/[\u{1F300}-\u{1FAFF}☀-➿]/gu, ""));
     u.lang = "es-MX";
     u.rate = 0.95;
     u.pitch = 1.15;
-    const voces = sy.getVoices().filter((v) => /^es/i.test(v.lang));
-    const mx = voces.filter((v) => /MX|US|419/i.test(v.lang));
-    if (mx[0] || voces[0]) u.voice = mx[0] || voces[0];
+    const v = mejorVoz(sy.getVoices());
+    if (v) u.voice = v;
     sy.speak(u);
     return true;
   } catch {

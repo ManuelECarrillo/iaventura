@@ -17,7 +17,7 @@ self.addEventListener("fetch", (e) => {
   const req = e.request;
   if (req.method !== "GET") return;
   const url = new URL(req.url);
-  const estatico = url.pathname.startsWith("/_next/static/") || /\.(png|svg|ico|woff2?)$/.test(url.pathname) || url.host.includes("fonts.g");
+  const estatico = url.pathname.startsWith("/_next/static/") || /\.(png|svg|ico|woff2?|mp3)$/.test(url.pathname) || url.host.includes("fonts.g");
   if (estatico) {
     e.respondWith(caches.match(req).then((r) => r || fetch(req).then((res) => {
       const copia = res.clone();

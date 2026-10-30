@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Globo from "../Globo";
 import { carta } from "@/contenido/cartas";
 import { CARTAS } from "@/contenido/cartas";
-import { hablar, sonido } from "@/lib/sonido";
+import { hablar, hablarCarta, sonido } from "@/lib/sonido";
 import type {
   PasoCarta, PasoChuecos, PasoDuelo, PasoEntrena, PasoHistoria, PasoIaONo, PasoOrden, PasoPasos, PasoSecretos, PasoVerdad,
 } from "@/lib/tipos";
@@ -100,7 +100,7 @@ export function CartaPaso({ paso, fin }: Props<PasoCarta>) {
         </button>
       </div>
       <div className="abajo">
-        <button type="button" className="boton sec" onClick={() => hablar(c.t + ". " + c.d)}>🔊 Escuchar</button>
+        <button type="button" className="boton sec" onClick={() => hablarCarta(c)}>🔊 Escuchar</button>
         <button type="button" className="boton uva" disabled={!vuelta} onClick={() => fin(0)}>¡La guardo en mi álbum!</button>
       </div>
     </>
@@ -130,6 +130,7 @@ export function Entrena({ paso, fin }: Props<PasoEntrena>) {
       <>
         <div className="tipo">Minijuego · Entrena a Bit</div>
         <Globo texto={`Quiero aprender qué es ${paso.concepto === "ANIMAL" ? "un" : "una"} ${paso.concepto}. Toca todos los ejemplos correctos para enseñarme.`} animo="piensa" />
+        <p className="pista">💡 Los dibujos que tocas son los ejemplos. Si tocas uno que no es, Bit aprende mal.</p>
         <div className="rejilla">
           {paso.fichas.map((f, i) => (
             <button type="button" key={i} className={"ficha" + (sel.has(i) ? " sel" : "")} aria-pressed={sel.has(i)} aria-label={f.nombre}
@@ -187,6 +188,9 @@ export function Entrena({ paso, fin }: Props<PasoEntrena>) {
 
 // ---------- Arma la orden (prompt) ----------
 export function Orden({ paso, fin }: Props<PasoOrden>) {
+  // Las opciones vienen de peor a mejor; se muestran revueltas (distinto en cada fila) para que
+  // la correcta no sea siempre la tercera. `el` guarda el índice original (0 peor, 2 mejor).
+  const mezcla = useMemo(() => paso.filas.map((f, r) => mezclar([0, 1, 2], r * 31 + f.q.length + paso.intro.length)), [paso]);
   const [el, setEl] = useState<(number | null)[]>(paso.filas.map(() => null));
   const [ver, setVer] = useState(false);
   const [err, setErr] = useState(0);
@@ -205,13 +209,14 @@ export function Orden({ paso, fin }: Props<PasoOrden>) {
       <>
         <div className="tipo">Minijuego · Arma la orden</div>
         <Globo texto={paso.intro} />
+        <p className="pista">💡 Pista: entre más le cuentes a Bit, mejor te entiende.</p>
         {paso.filas.map((f, r) => (
           <div className="fila" key={r}>
             <div className="q">{f.q}</div>
             <div className="chips">
-              {f.ops.map((o, k) => (
+              {mezcla[r].map((k) => (
                 <button type="button" key={k} className={"chip" + (el[r] === k ? " sel" : "")} aria-pressed={el[r] === k}
-                  onClick={() => { const n = [...el]; n[r] = k; setEl(n); sonido("toque"); }}>{o}</button>
+                  onClick={() => { const n = [...el]; n[r] = k; setEl(n); sonido("toque"); }}>{f.ops[k]}</button>
               ))}
             </div>
           </div>
@@ -253,7 +258,7 @@ export function Verdad({ paso, fin }: Props<PasoVerdad>) {
     <>
       <div className="tipo">Minijuego · ¿Verdad o invento? · {i + 1} de {paso.items.length}</div>
       <Globo texto={it.t} grande />
-      <p style={{ margin: 0, fontWeight: 700, color: "var(--tinta2)", textAlign: "center" }}>A veces Bit inventa cosas. ¿Esto es cierto?</p>
+      <p style={{ margin: 0, fontWeight: 700, color: "var(--tinta2)", textAlign: "center" }}>A veces Bit inventa cosas y las dice muy seguro. ¿Esto es cierto?</p>
       <div className="dos">
         <button type="button" className="op a" disabled={resp !== null} onClick={() => { setResp(true); if (!it.v) setErr(err + 1); sonido(it.v ? "bien" : "mal"); }}><span>✅</span>Es verdad</button>
         <button type="button" className="op b" disabled={resp !== null} onClick={() => { setResp(false); if (it.v) setErr(err + 1); sonido(!it.v ? "bien" : "mal"); }}><span>🌀</span>Bit lo inventó</button>

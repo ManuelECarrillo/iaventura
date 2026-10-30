@@ -5,7 +5,7 @@ import { Cabecera, Hoja, Nav, useToast } from "@/components/Ui";
 import { CARTAS } from "@/contenido/cartas";
 import { MUNDOS } from "@/contenido/mundos";
 import { useAvance } from "@/lib/avance";
-import { hablar } from "@/lib/sonido";
+import { hablarCarta } from "@/lib/sonido";
 import type { Carta } from "@/lib/tipos";
 
 export default function Album() {
@@ -42,7 +42,7 @@ export default function Album() {
           <div className="carta-zona">
             <div className="carta vuelta"><div className="cara atras">?</div><div className="cara frente"><span className="em">{ver.em}</span><h3>{ver.t}</h3><p>{ver.d}</p></div></div>
           </div>
-          <button type="button" className="boton sec" onClick={() => hablar(ver.t + ". " + ver.d)}>🔊 Escuchar</button>
+          <button type="button" className="boton sec" onClick={() => hablarCarta(ver)}>🔊 Escuchar</button>
         </Hoja>
       )}
     </>
