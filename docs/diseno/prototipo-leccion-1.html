@@ -1,0 +1,772 @@
+<title>IAventura</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap">
+<style>
+/* Layout: una sola columna de celular (máx. 480px), barra fija abajo; mundo de islas sobre cielo claro. Un solo tema a propósito (juego infantil). */
+:root {
+  --cielo: #e6f3ff;
+  --cielo2: #d3eaff;
+  --tinta: #1b2340;
+  --tinta2: #4a5578;
+  --bit: #2ec4d6;
+  --sol: #ffc531;
+  --rosa: #ff5c8a;
+  --hoja: #2fcf85;
+  --uva: #7b61ff;
+  --blanco: #ffffff;
+  --sombra: #b8d3ee;
+  --mal: #ff7a59;
+  --font-display: "Baloo 2", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "Nunito", "Segoe UI", system-ui, sans-serif;
+  --r: 22px;
+  color-scheme: light;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--cielo);
+  background-image: radial-gradient(var(--cielo2) 2px, transparent 2.5px);
+  background-size: 26px 26px;
+  color: var(--tinta);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.4;
+}
+button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; }
+button:focus-visible { outline: 3px solid var(--uva); outline-offset: 3px; }
+.app {
+  max-width: 480px; margin: 0 auto; min-height: 100%;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 12px 110px;
+}
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.1; margin: 0; text-wrap: balance; }
+
+/* Barra de arriba */
+.top { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+.logo { font-family: var(--font-display); font-weight: 800; font-size: 1.6rem; letter-spacing: -.01em; }
+.logo b { color: var(--uva); }
+.pills { display: flex; gap: 6px; }
+.pill { background: var(--blanco); border-radius: 999px; padding: 4px 12px; font-weight: 800; box-shadow: 0 3px 0 var(--sombra); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* Racha semanal */
+.semana { margin-top: 12px; background: var(--blanco); border-radius: var(--r); padding: 12px 14px; box-shadow: 0 4px 0 var(--sombra); display: flex; align-items: center; gap: 12px; }
+.semana .txt { flex: 1; min-width: 0; font-weight: 700; font-size: .95rem; }
+.semana .txt small { display: block; color: var(--tinta2); font-weight: 600; }
+.dias { display: flex; gap: 4px; }
+.dia { width: 26px; height: 26px; border-radius: 50%; background: var(--cielo); display: grid; place-items: center; font-size: .72rem; font-weight: 800; color: var(--tinta2); }
+.dia.si { background: var(--sol); color: var(--tinta); }
+
+/* Mapa */
+.mundo { margin-top: 18px; border-radius: 28px; padding: 18px 16px 22px; background: linear-gradient(180deg, #fff7dc, #ffe9a8); box-shadow: 0 5px 0 #f1cf6e; position: relative; overflow: hidden; }
+.mundo-cab { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.mundo-cab h2 { font-size: 1.5rem; }
+.mundo-cab p { margin: 2px 0 0; color: var(--tinta2); font-weight: 700; font-size: .92rem; }
+.etq { font-size: .72rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; background: var(--hoja); color: #053b22; white-space: nowrap; }
+.etq.fam { background: var(--uva); color: #fff; }
+.camino { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: 14px; }
+.nodo { display: flex; align-items: center; gap: 12px; width: 100%; }
+.nodo:nth-child(4n+2) { padding-left: 22%; }
+.nodo:nth-child(4n+3) { padding-left: 40%; }
+.nodo:nth-child(4n+4) { padding-left: 18%; }
+.bola { width: 72px; height: 72px; flex: none; border-radius: 50%; display: grid; place-items: center; font-size: 2rem; background: var(--blanco); box-shadow: 0 6px 0 var(--sombra); transition: transform .15s; }
+.bola:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--sombra); }
+.nodo.activo .bola { background: var(--uva); box-shadow: 0 6px 0 #5240c9; animation: latido 1.6s ease-in-out infinite; }
+.nodo.hecho .bola { background: var(--sol); box-shadow: 0 6px 0 #d9a000; }
+.nodo.cerrado .bola { background: #f3ead0; box-shadow: 0 6px 0 #e0d2a8; filter: grayscale(.6); }
+.nodo .nom { font-weight: 800; font-size: .95rem; line-height: 1.2; min-width: 0; }
+.nodo .nom small { display: block; font-weight: 700; color: var(--tinta2); font-size: .8rem; }
+@keyframes latido { 50% { transform: scale(1.06); } }
+
+.otros { display: grid; gap: 10px; margin-top: 14px; }
+.otro { display: flex; align-items: center; gap: 12px; background: var(--blanco); border-radius: var(--r); padding: 12px 14px; box-shadow: 0 4px 0 var(--sombra); text-align: left; width: 100%; }
+.otro .em { font-size: 1.8rem; width: 44px; text-align: center; flex: none; }
+.otro .t { flex: 1; min-width: 0; font-weight: 800; }
+.otro .t small { display: block; color: var(--tinta2); font-weight: 600; font-size: .82rem; }
+
+/* Barra fija abajo */
+.nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--blanco); box-shadow: 0 -2px 0 var(--sombra); padding-bottom: env(safe-area-inset-bottom, 0px); padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); }
+.nav-in { max-width: 480px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); }
+.nav button { display: flex; flex-direction: column; align-items: center; gap: 0; padding: 8px 4px 10px; font-weight: 800; font-size: .8rem; color: var(--tinta2); min-height: 62px; }
+.nav button span { font-size: 1.5rem; line-height: 1.2; }
+.nav button.on { color: var(--uva); }
+.nav button.on span { transform: translateY(-2px) scale(1.1); }
+
+/* Bit */
+.bit svg { display: block; width: 100%; height: auto; }
+.bit .ojo { animation: parpadeo 4s infinite; transform-origin: center; transform-box: fill-box; }
+@keyframes parpadeo { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
+.bit.brinca { animation: brinco .5s ease; }
+@keyframes brinco { 30% { transform: translateY(-14px); } 60% { transform: translateY(0); } 80% { transform: translateY(-5px); } }
+.bit.piensa { animation: piensa .9s ease-in-out infinite; }
+@keyframes piensa { 50% { transform: rotate(-5deg); } }
+
+/* Lección */
+.leccion { position: fixed; inset: 0; z-index: 40; background: var(--cielo); overflow-y: auto; }
+.lec-in { max-width: 480px; margin: 0 auto; min-height: 100%; display: flex; flex-direction: column; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: calc(12px + env(safe-area-inset-top, 0px)) calc(20px + env(safe-area-inset-bottom, 0px)); }
+.lec-top { display: flex; align-items: center; gap: 10px; }
+.cerrar { width: 44px; height: 44px; border-radius: 50%; background: var(--blanco); box-shadow: 0 3px 0 var(--sombra); font-size: 1.2rem; font-weight: 800; flex: none; }
+.barra { flex: 1; display: flex; gap: 4px; }
+.barra i { flex: 1; height: 12px; border-radius: 99px; background: var(--blanco); box-shadow: inset 0 2px 0 var(--sombra); transition: background .3s; }
+.barra i.ya { background: var(--hoja); box-shadow: none; }
+.barra i.ahora { background: var(--sol); box-shadow: none; }
+.escena { flex: 1; display: flex; flex-direction: column; gap: 14px; padding-top: 16px; }
+.tipo { font-family: var(--font-display); font-weight: 800; font-size: .85rem; letter-spacing: .08em; text-transform: uppercase; color: var(--uva); }
+.escena h2 { font-size: 1.7rem; }
+
+.dialogo { display: flex; align-items: flex-end; gap: 10px; }
+.dialogo .bit { width: 108px; flex: none; }
+.dialogo.grande .bit { width: 150px; }
+.globo { position: relative; flex: 1; min-width: 0; background: var(--blanco); border-radius: 22px 22px 22px 6px; padding: 14px 16px; box-shadow: 0 4px 0 var(--sombra); font-weight: 700; font-size: 1.08rem; }
+.globo .hablar { position: absolute; top: -14px; right: -6px; width: 40px; height: 40px; border-radius: 50%; background: var(--sol); box-shadow: 0 3px 0 #d9a000; font-size: 1.1rem; }
+
+.boton { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 58px; border-radius: 18px; font-family: var(--font-display); font-weight: 800; font-size: 1.25rem; background: var(--hoja); color: #04361f; box-shadow: 0 6px 0 #1f9e63; transition: transform .1s, box-shadow .1s; }
+.boton:active { transform: translateY(4px); box-shadow: 0 2px 0 #1f9e63; }
+.boton:disabled { background: #d7e3ef; color: #8090ad; box-shadow: 0 6px 0 #bfcfe0; cursor: default; }
+.boton.sec { background: var(--blanco); color: var(--tinta); box-shadow: 0 6px 0 var(--sombra); }
+.boton.uva { background: var(--uva); color: #fff; box-shadow: 0 6px 0 #5240c9; }
+.abajo { margin-top: auto; display: grid; gap: 12px; padding-top: 12px; }
+
+/* Tarjeta de objeto y dos botones grandes */
+.objeto { background: var(--blanco); border-radius: 26px; padding: 22px 16px; text-align: center; box-shadow: 0 5px 0 var(--sombra); }
+.objeto .em { font-size: 4.2rem; line-height: 1.1; }
+.objeto .t { font-family: var(--font-display); font-weight: 800; font-size: 1.35rem; margin-top: 6px; }
+.dos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.op { min-height: 92px; border-radius: 22px; font-family: var(--font-display); font-weight: 800; font-size: 1.15rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 8px; transition: transform .1s; }
+.op span { font-size: 2rem; }
+.op.a { background: var(--bit); color: #04323a; box-shadow: 0 6px 0 #1f97a6; }
+.op.b { background: var(--sol); color: #3a2a00; box-shadow: 0 6px 0 #d9a000; }
+.op:active { transform: translateY(4px); }
+.op:disabled { opacity: .45; cursor: default; }
+
+.aviso { border-radius: 20px; padding: 14px 16px; font-weight: 700; animation: sube .25s ease; }
+.aviso b { font-family: var(--font-display); font-size: 1.25rem; display: block; }
+.aviso.bien { background: #d6f7e7; color: #064a2a; }
+.aviso.mal { background: #ffe4dc; color: #6b1d07; }
+@keyframes sube { from { transform: translateY(12px); opacity: 0; } }
+
+/* Fichas para elegir (entrenar) */
+.rejilla { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.ficha { aspect-ratio: 1; max-width: 100%; border-radius: 20px; background: var(--blanco); font-size: 2.3rem; box-shadow: 0 5px 0 var(--sombra); position: relative; transition: transform .1s; }
+.ficha.sel { background: #e7e1ff; box-shadow: 0 5px 0 var(--uva); transform: translateY(-2px); }
+.ficha.sel::after { content: "✓"; position: absolute; top: 4px; right: 6px; width: 22px; height: 22px; border-radius: 50%; background: var(--uva); color: #fff; font-size: .8rem; font-weight: 800; display: grid; place-items: center; font-family: var(--font-body); }
+.ficha:disabled { cursor: default; }
+
+/* Armar la orden */
+.fila { display: grid; gap: 8px; }
+.fila .q { font-weight: 800; font-size: .95rem; color: var(--tinta2); }
+.chips { display: grid; gap: 8px; }
+.chip { text-align: left; padding: 12px 14px; border-radius: 16px; background: var(--blanco); box-shadow: 0 4px 0 var(--sombra); font-weight: 700; min-height: 48px; }
+.chip.sel { background: var(--uva); color: #fff; box-shadow: 0 4px 0 #5240c9; }
+.orden { background: var(--tinta); color: #fff; border-radius: 18px; padding: 14px 16px; font-weight: 700; }
+.orden small { display: block; color: var(--sol); font-weight: 800; letter-spacing: .06em; text-transform: uppercase; font-size: .72rem; margin-bottom: 4px; }
+.cuento { background: var(--blanco); border-radius: 18px; padding: 14px 16px; box-shadow: 0 4px 0 var(--sombra); font-weight: 600; }
+.estrellas { font-size: 2rem; letter-spacing: 4px; text-align: center; }
+.estrellas .no { filter: grayscale(1); opacity: .3; }
+
+/* Carta de poder */
+.carta-zona { perspective: 900px; display: grid; place-items: center; padding: 8px 0; }
+.carta { width: 230px; max-width: 100%; aspect-ratio: 3 / 4; position: relative; transform-style: preserve-3d; transition: transform .7s cubic-bezier(.3,1.4,.5,1); }
+.carta.vuelta { transform: rotateY(180deg); }
+.cara { position: absolute; inset: 0; border-radius: 24px; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 18px; }
+.cara.atras { background: repeating-linear-gradient(45deg, var(--uva) 0 14px, #8d77ff 14px 28px); box-shadow: 0 8px 0 #5240c9; color: #fff; font-family: var(--font-display); font-weight: 800; font-size: 3rem; }
+.cara.frente { transform: rotateY(180deg); background: linear-gradient(160deg, #fff, #fff4cc); box-shadow: 0 8px 0 #e3b52a; border: 4px solid var(--sol); }
+.cara.frente .em { font-size: 3.6rem; }
+.cara.frente h3 { font-size: 1.5rem; margin: 6px 0; }
+.cara.frente p { margin: 0; font-weight: 700; font-size: .95rem; color: var(--tinta2); }
+.cara.frente .n { position: absolute; top: 10px; left: 14px; font-size: .75rem; font-weight: 800; color: #b38600; letter-spacing: .05em; }
+
+/* Álbum */
+.titulo-sec { margin-top: 16px; }
+.titulo-sec h2 { font-size: 1.6rem; }
+.titulo-sec p { margin: 2px 0 0; color: var(--tinta2); font-weight: 700; }
+.album { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+.mini { aspect-ratio: 3 / 4; border-radius: 16px; background: linear-gradient(160deg, #fff, #fff4cc); border: 3px solid var(--sol); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6px; text-align: center; box-shadow: 0 4px 0 #e3b52a; }
+.mini .em { font-size: 2rem; }
+.mini b { font-family: var(--font-display); font-size: .92rem; line-height: 1.1; margin-top: 4px; }
+.mini.falta { background: #dfeaf6; border-color: #c7d7e8; box-shadow: 0 4px 0 #c7d7e8; color: #8a9ab7; }
+.mini.falta .em { filter: grayscale(1) brightness(1.6); opacity: .45; }
+
+/* Taller de Bit */
+.taller { background: var(--blanco); border-radius: 28px; padding: 16px; margin-top: 14px; box-shadow: 0 5px 0 var(--sombra); }
+.taller .bit { width: 190px; margin: 0 auto; }
+.grupo { margin-top: 14px; }
+.grupo .q { font-weight: 800; color: var(--tinta2); font-size: .95rem; margin-bottom: 8px; }
+.colores { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+.color { aspect-ratio: 1; border-radius: 50%; box-shadow: 0 4px 0 rgba(0,0,0,.15); border: 4px solid var(--blanco); }
+.color.sel { outline: 4px solid var(--tinta); }
+.accs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.acc { border-radius: 18px; background: var(--cielo); padding: 10px; font-weight: 800; min-height: 64px; display: flex; align-items: center; gap: 8px; text-align: left; }
+.acc span { font-size: 1.6rem; }
+.acc small { display: block; font-weight: 700; color: var(--tinta2); font-size: .78rem; }
+.acc.sel { background: var(--uva); color: #fff; }
+.acc.sel small { color: #e5deff; }
+.acc.bloq { opacity: .55; }
+
+/* Papás */
+.panel { background: var(--blanco); border-radius: 24px; padding: 16px; margin-top: 14px; box-shadow: 0 5px 0 var(--sombra); }
+.panel h3 { font-size: 1.25rem; margin-bottom: 8px; }
+.panel ul { margin: 0; padding-left: 20px; }
+.panel li { margin-bottom: 6px; font-weight: 600; }
+.cuatro { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 12px; }
+.cifras { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; }
+.cifras div { background: var(--cielo); border-radius: 16px; padding: 10px 4px; }
+.cifras b { font-family: var(--font-display); font-size: 1.7rem; display: block; line-height: 1; font-variant-numeric: tabular-nums; }
+.cifras small { font-weight: 700; color: var(--tinta2); font-size: .78rem; }
+.precio { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 10px 0; border-top: 2px dashed var(--cielo2); }
+.precio:first-of-type { border-top: 0; }
+.precio b { font-family: var(--font-display); font-size: 1.2rem; }
+.precio span { color: var(--tinta2); font-weight: 700; font-size: .9rem; }
+
+/* Diálogo propio y aviso flotante */
+.velo { position: fixed; inset: 0; z-index: 60; background: rgba(27,35,64,.45); display: grid; place-items: end center; padding: 16px; padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
+.hoja { width: 100%; max-width: 448px; background: var(--blanco); border-radius: 26px; padding: 20px 16px 16px; display: grid; gap: 12px; animation: sube .2s ease; }
+.hoja h3 { font-size: 1.45rem; }
+.hoja p { margin: 0; font-weight: 600; color: var(--tinta2); }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(84px + env(safe-area-inset-bottom, 0px)); z-index: 70; background: var(--tinta); color: #fff; font-weight: 800; padding: 12px 18px; border-radius: 16px; max-width: calc(100% - 32px); text-align: center; animation: sube .2s ease; }
+
+/* Final */
+.final { text-align: center; }
+.final .bit { width: 170px; margin: 0 auto; }
+.gana { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; }
+.gana .mini { width: 84px; }
+.mision { background: linear-gradient(160deg, #e7e1ff, #fff); border: 3px dashed var(--uva); border-radius: 22px; padding: 14px 16px; text-align: left; font-weight: 700; }
+.mision small { display: block; color: var(--uva); font-weight: 800; letter-spacing: .06em; text-transform: uppercase; font-size: .75rem; margin-bottom: 4px; }
+#confeti { position: fixed; inset: 0; pointer-events: none; z-index: 80; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+
+<div class="app" id="app"></div>
+<nav class="nav" aria-label="Secciones"><div class="nav-in" id="nav"></div></nav>
+<canvas id="confeti" hidden></canvas>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------- Estado guardado en el celular ----------
+  var CLAVE = "iaventura-v1";
+  var S = { estrellas: 0, hechas: {}, cartas: [], color: "#2ec4d6", acc: "antena", dias: [] };
+  try { var g = JSON.parse(localStorage.getItem(CLAVE) || "null"); if (g) S = Object.assign(S, g); } catch (e) {}
+  function guardar() { try { localStorage.setItem(CLAVE, JSON.stringify(S)); } catch (e) {} }
+
+  var CARTAS = [
+    { id: "ia", em: "🧠", t: "Inteligencia artificial", d: "Programas que aprenden de ejemplos para hacer cosas que antes solo hacíamos las personas." },
+    { id: "datos", em: "🗂️", t: "Datos", d: "Los ejemplos con los que aprende una IA. Si los datos están chuecos, aprende chueco." },
+    { id: "prompt", em: "💬", t: "Prompt", d: "La orden que le das a la IA. Entre más clara y con más detalles, mejor responde." },
+    { id: "alucina", em: "🌀", t: "Alucinación", d: "Cuando la IA dice algo falso como si fuera cierto. Por eso siempre hay que revisar." },
+    { id: "entrenar", em: "🏋️", t: "Entrenar", d: "Enseñarle a una IA mostrándole muchos ejemplos.", luego: true },
+    { id: "modelo", em: "📦", t: "Modelo", d: "Lo que la IA aprendió, guardado y listo para usarse.", luego: true },
+    { id: "sesgo", em: "⚖️", t: "Sesgo", d: "Cuando la IA trata injusto algo porque aprendió de datos incompletos.", luego: true },
+    { id: "privacidad", em: "🔒", t: "Privacidad", d: "Cuidar tus datos: hay cosas que no se le cuentan a ninguna IA.", luego: true },
+    { id: "chatbot", em: "🤖", t: "Chatbot", d: "Una IA con la que puedes platicar escribiendo o hablando.", luego: true }
+  ];
+
+  var MUNDOS = [
+    { em: "🌳", n: "Bosque de los Datos", d: "Bit aprende a reconocer animales", gratis: true },
+    { em: "🏙️", n: "Ciudad Prompt", d: "El arte de dar buenas órdenes" },
+    { em: "🌫️", n: "Pantano de los Espejismos", d: "¿Verdad o invento de la IA?" },
+    { em: "🏰", n: "Fortaleza Guardiana", d: "Cuidar secretos y datos" },
+    { em: "🎨", n: "Estudio Creativo", d: "Dibujos, cuentos y música con IA" },
+    { em: "🗼", n: "Torre de los Superpoderes", d: "Usar la IA para estudiar y crear" }
+  ];
+
+  var LECCIONES = [
+    { id: "l1", em: "🤖", n: "Conoce a Bit", d: "5 minijuegos · 4 min" },
+    { id: "l2", em: "🔍", n: "¿Cómo piensa una máquina?", d: "Próximamente" },
+    { id: "l3", em: "🧩", n: "Algoritmos por todos lados", d: "Próximamente" },
+    { id: "l4", em: "🎙️", n: "Asistentes que escuchan", d: "Próximamente" },
+    { id: "l5", em: "👑", n: "Jefe de la isla", d: "Reto final del mundo" }
+  ];
+
+  // ---------- Utilidades ----------
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  function h(html) { var t = document.createElement("template"); t.innerHTML = html.trim(); return t.content.firstElementChild; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+  var actx = null;
+  function sonido(tipo) {
+    try {
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+      var notas = tipo === "bien" ? [660, 880] : tipo === "carta" ? [523, 659, 784, 1047] : [300, 220];
+      notas.forEach(function (f, i) {
+        var o = actx.createOscillator(), gn = actx.createGain();
+        o.type = tipo === "mal" ? "triangle" : "sine"; o.frequency.value = f;
+        var t0 = actx.currentTime + i * 0.09;
+        gn.gain.setValueAtTime(0.0001, t0); gn.gain.exponentialRampToValueAtTime(0.18, t0 + 0.02); gn.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.22);
+        o.connect(gn); gn.connect(actx.destination); o.start(t0); o.stop(t0 + 0.25);
+      });
+    } catch (e) {}
+  }
+
+  function hablar(texto) {
+    try {
+      var sy = window.speechSynthesis; if (!sy) { toast("Este celular no puede leer en voz alta"); return; }
+      sy.cancel();
+      var u = new SpeechSynthesisUtterance(texto.replace(/[\u{1F300}-\u{1FAFF}☀-➿]/gu, ""));
+      u.lang = "es-MX"; u.rate = 0.95; u.pitch = 1.15;
+      var v = sy.getVoices().filter(function (x) { return /^es/i.test(x.lang); });
+      var mx = v.filter(function (x) { return /MX|US|419/i.test(x.lang); });
+      if (mx[0] || v[0]) u.voice = mx[0] || v[0];
+      sy.speak(u);
+    } catch (e) {}
+  }
+
+  var toastT = null;
+  function toast(msg) {
+    var old = $(".toast"); if (old) old.remove();
+    var t = h('<div class="toast" role="status">' + esc(msg) + "</div>");
+    document.body.appendChild(t); clearTimeout(toastT); toastT = setTimeout(function () { t.remove(); }, 2400);
+  }
+
+  function preguntar(titulo, texto, si, no, alSi) {
+    var v = h('<div class="velo"><div class="hoja" role="dialog" aria-modal="true"><h3>' + esc(titulo) + "</h3><p>" + esc(texto) + '</p><button class="boton" data-r="no">' + esc(no) + '</button><button class="boton sec" data-r="si">' + esc(si) + "</button></div></div>");
+    v.addEventListener("click", function (e) {
+      var b = e.target.closest("button"); if (!b && e.target !== v) return;
+      v.remove(); if (b && b.dataset.r === "si") alSi();
+    });
+    document.body.appendChild(v);
+  }
+
+  function marcarDia() {
+    var hoy = new Date(); var k = hoy.getFullYear() + "-" + (hoy.getMonth() + 1) + "-" + hoy.getDate();
+    if (S.dias.indexOf(k) < 0) S.dias.push(k);
+    S.dias = S.dias.slice(-14);
+  }
+  function diasSemana() {
+    var hoy = new Date(); var lunes = new Date(hoy); lunes.setDate(hoy.getDate() - ((hoy.getDay() + 6) % 7));
+    var out = [];
+    for (var i = 0; i < 7; i++) { var d = new Date(lunes); d.setDate(lunes.getDate() + i); out.push(S.dias.indexOf(d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate()) >= 0); }
+    return out;
+  }
+
+  // ---------- Bit (dibujado con código) ----------
+  function bitSVG(animo, color, acc) {
+    color = color || S.color; acc = acc === undefined ? S.acc : acc;
+    var boca = {
+      feliz: '<path d="M78 128 Q100 146 122 128" stroke="#1b2340" stroke-width="6" fill="none" stroke-linecap="round"/>',
+      wow: '<ellipse cx="100" cy="133" rx="9" ry="11" fill="#1b2340"/>',
+      piensa: '<path d="M82 134 L118 130" stroke="#1b2340" stroke-width="6" stroke-linecap="round"/>',
+      ups: '<path d="M80 138 Q100 124 120 138" stroke="#1b2340" stroke-width="6" fill="none" stroke-linecap="round"/>'
+    }[animo || "feliz"];
+    var ojos = animo === "piensa"
+      ? '<g class="ojo"><ellipse cx="75" cy="98" rx="11" ry="13" fill="#1b2340"/><circle cx="79" cy="92" r="4" fill="#fff"/></g><g class="ojo"><ellipse cx="125" cy="98" rx="11" ry="13" fill="#1b2340"/><circle cx="129" cy="92" r="4" fill="#fff"/></g>'
+      : '<g class="ojo"><ellipse cx="75" cy="100" rx="12" ry="15" fill="#1b2340"/><circle cx="79" cy="94" r="5" fill="#fff"/></g><g class="ojo"><ellipse cx="125" cy="100" rx="12" ry="15" fill="#1b2340"/><circle cx="129" cy="94" r="5" fill="#fff"/></g>';
+    var extra = "";
+    if (acc === "antena") extra = '<line x1="100" y1="44" x2="100" y2="20" stroke="#1b2340" stroke-width="6" stroke-linecap="round"/><circle cx="100" cy="16" r="11" fill="#ffc531" stroke="#1b2340" stroke-width="5"/>';
+    if (acc === "gorra") extra = '<path d="M46 62 Q100 4 154 62 Z" fill="#ff5c8a" stroke="#1b2340" stroke-width="5" stroke-linejoin="round"/><path d="M140 58 Q180 56 188 70 L150 68 Z" fill="#ff5c8a" stroke="#1b2340" stroke-width="5" stroke-linejoin="round"/><circle cx="100" cy="20" r="7" fill="#ffc531" stroke="#1b2340" stroke-width="4"/>';
+    if (acc === "corona") extra = '<path d="M58 54 L66 14 L84 38 L100 8 L116 38 L134 14 L142 54 Z" fill="#ffc531" stroke="#1b2340" stroke-width="5" stroke-linejoin="round"/><circle cx="100" cy="34" r="6" fill="#ff5c8a"/>';
+    if (acc === "mono") extra = '<line x1="100" y1="44" x2="100" y2="24" stroke="#1b2340" stroke-width="6" stroke-linecap="round"/><path d="M100 22 L72 8 L74 36 Z M100 22 L128 8 L126 36 Z" fill="#7b61ff" stroke="#1b2340" stroke-width="5" stroke-linejoin="round"/><circle cx="100" cy="22" r="7" fill="#7b61ff" stroke="#1b2340" stroke-width="5"/>';
+    return '<svg viewBox="0 0 200 230" role="img" aria-label="Bit, el robot">' +
+      '<ellipse cx="100" cy="222" rx="58" ry="7" fill="#1b2340" opacity=".12"/>' +
+      '<rect x="62" y="166" width="76" height="50" rx="20" fill="' + color + '" stroke="#1b2340" stroke-width="6"/>' +
+      '<circle cx="100" cy="190" r="9" fill="#ffc531" stroke="#1b2340" stroke-width="4"/>' +
+      extra +
+      '<rect x="22" y="80" width="18" height="40" rx="9" fill="' + color + '" stroke="#1b2340" stroke-width="6"/>' +
+      '<rect x="160" y="80" width="18" height="40" rx="9" fill="' + color + '" stroke="#1b2340" stroke-width="6"/>' +
+      '<rect x="34" y="44" width="132" height="126" rx="44" fill="' + color + '" stroke="#1b2340" stroke-width="6"/>' +
+      '<rect x="50" y="66" width="100" height="86" rx="32" fill="#ffffff" stroke="#1b2340" stroke-width="5"/>' +
+      ojos + '<circle cx="58" cy="124" r="7" fill="#ff5c8a" opacity=".55"/><circle cx="142" cy="124" r="7" fill="#ff5c8a" opacity=".55"/>' + boca +
+      "</svg>";
+  }
+  function bitEl(animo, clase) { return '<div class="bit ' + (clase || "") + '">' + bitSVG(animo) + "</div>"; }
+
+  // ---------- Pantallas principales ----------
+  var vista = "mapa";
+  var NAV = [["mapa", "🗺️", "Mapa"], ["album", "🃏", "Álbum"], ["bit", "🤖", "Bit"], ["papas", "👪", "Papás"]];
+  function pintarNav() {
+    $("#nav").innerHTML = NAV.map(function (n) {
+      return '<button data-v="' + n[0] + '" class="' + (vista === n[0] ? "on" : "") + '"' + (vista === n[0] ? ' aria-current="page"' : "") + "><span>" + n[1] + "</span>" + n[2] + "</button>";
+    }).join("");
+  }
+  $("#nav").addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) ir(b.dataset.v); });
+
+  function ir(v) { vista = v; papasAbierto = v === "papas" ? papasAbierto : false; pintar(); window.scrollTo(0, 0); }
+
+  function cabecera() {
+    return '<div class="top"><div class="logo">IA<b>ventura</b></div><div class="pills"><span class="pill" aria-label="Estrellas">⭐ ' + S.estrellas + '</span><span class="pill" aria-label="Cartas">🃏 ' + S.cartas.length + "</span></div></div>";
+  }
+
+  function pintar() {
+    pintarNav();
+    var a = $("#app");
+    if (vista === "mapa") a.innerHTML = pantallaMapa();
+    if (vista === "album") a.innerHTML = pantallaAlbum();
+    if (vista === "bit") a.innerHTML = pantallaBit();
+    if (vista === "papas") a.innerHTML = pantallaPapas();
+  }
+
+  function pantallaMapa() {
+    var sem = diasSemana(), n = sem.filter(Boolean).length, letras = ["L", "M", "M", "J", "V", "S", "D"];
+    var hecha = !!S.hechas.l1;
+    var nodos = LECCIONES.map(function (l, i) {
+      var est = i === 0 ? (hecha ? "hecho" : "activo") : (i === 1 && hecha ? "activo" : "cerrado");
+      var sub = i === 0 && hecha ? "⭐".repeat(S.hechas.l1) + " · Volver a jugar" : (est === "cerrado" ? "🔒 " + l.d : l.d);
+      return '<div class="nodo ' + est + '"><button class="bola" data-lec="' + l.id + '" aria-label="' + esc(l.n) + '">' + (est === "cerrado" ? "🔒" : l.em) + '</button><div class="nom">' + esc(l.n) + "<small>" + esc(sub) + "</small></div></div>";
+    }).join("");
+    return cabecera() +
+      '<div class="semana"><div class="txt">Racha de la semana<small>' + (n >= 3 ? "¡Meta cumplida! Bit está orgulloso" : "Juega 3 días esta semana · llevas " + n) + '</small></div><div class="dias">' +
+      sem.map(function (s, i) { return '<span class="dia' + (s ? " si" : "") + '">' + letras[i] + "</span>"; }).join("") + "</div></div>" +
+      '<section class="mundo"><div class="mundo-cab"><div><h2>🏝️ Isla Chispa</h2><p>Mundo 1 · Bit despierta y no sabe nada</p></div><span class="etq">Gratis</span></div><div class="camino">' + nodos + "</div></section>" +
+      '<div class="otros">' + MUNDOS.map(function (m, i) {
+        return '<button class="otro" data-mundo="' + i + '"><span class="em">' + m.em + '</span><span class="t">Mundo ' + (i + 2) + " · " + esc(m.n) + "<small>" + esc(m.d) + '</small></span><span class="etq' + (m.gratis ? "" : " fam") + '">' + (m.gratis ? "Gratis" : "Familia") + "</span></button>";
+      }).join("") + "</div>";
+  }
+
+  function pantallaAlbum() {
+    return cabecera() + '<div class="titulo-sec"><h2>Álbum de cartas de poder</h2><p>Llevas ' + S.cartas.length + " de " + CARTAS.length + ". Cada palabra nueva de la IA es una carta.</p></div>" +
+      '<div class="album">' + CARTAS.map(function (c) {
+        var la = S.cartas.indexOf(c.id) >= 0;
+        return '<button class="mini' + (la ? "" : " falta") + '" data-carta="' + c.id + '"><span class="em">' + c.em + "</span><b>" + (la ? esc(c.t) : "???") + "</b></button>";
+      }).join("") + "</div>";
+  }
+
+  var ACCS = [["antena", "📡", "Antena", 0], ["gorra", "🧢", "Gorra", 1], ["mono", "🎀", "Moño", 2], ["corona", "👑", "Corona", 3]];
+  var COLORES = ["#2ec4d6", "#2fcf85", "#ff5c8a", "#ffc531", "#9d8bff"];
+  function pantallaBit() {
+    return cabecera() + '<div class="titulo-sec"><h2>El taller de Bit</h2><p>Gana estrellas para desbloquear cosas.</p></div>' +
+      '<div class="taller">' + bitEl("feliz") +
+      '<div class="grupo"><div class="q">Color</div><div class="colores">' + COLORES.map(function (c) { return '<button class="color' + (S.color === c ? " sel" : "") + '" style="background:' + c + '" data-color="' + c + '" aria-label="Color"></button>'; }).join("") + "</div></div>" +
+      '<div class="grupo"><div class="q">Accesorio</div><div class="accs">' + ACCS.map(function (a) {
+        var bloq = S.estrellas < a[3];
+        return '<button class="acc' + (S.acc === a[0] ? " sel" : "") + (bloq ? " bloq" : "") + '" data-acc="' + a[0] + '" data-min="' + a[3] + '"><span>' + (bloq ? "🔒" : a[1]) + "</span><div>" + a[2] + "<small>" + (a[3] ? (bloq ? "Necesitas " + a[3] + " ⭐" : "Desbloqueado") : "Gratis") + "</small></div></button>";
+      }).join("") + "</div></div></div>";
+  }
+
+  var papasAbierto = false;
+  function pantallaPapas() {
+    if (!papasAbierto) {
+      return cabecera() + '<div class="titulo-sec"><h2>Solo para adultos</h2><p>Para entrar, resuelve esta cuenta.</p></div>' +
+        '<div class="panel" style="text-align:center"><h3 style="font-size:2.2rem">7 × 8 = ?</h3><div class="cuatro">' +
+        [54, 56, 48, 63].map(function (n) { return '<button class="boton sec" data-pin="' + n + '">' + n + "</button>"; }).join("") + "</div></div>";
+    }
+    var aprendio = CARTAS.filter(function (c) { return S.cartas.indexOf(c.id) >= 0; });
+    return cabecera() + '<div class="titulo-sec"><h2>Rincón de papás</h2><p>Lo que su hijo está aprendiendo.</p></div>' +
+      '<div class="panel"><div class="cifras"><div><b>' + Object.keys(S.hechas).length + "</b><small>lecciones</small></div><div><b>" + S.cartas.length + "</b><small>palabras</small></div><div><b>" + diasSemana().filter(Boolean).length + "</b><small>días esta semana</small></div></div></div>" +
+      '<div class="panel"><h3>Ya sabe qué significa</h3>' + (aprendio.length ? "<ul>" + aprendio.map(function (c) { return "<li><b>" + esc(c.t) + ":</b> " + esc(c.d) + "</li>"; }).join("") + "</ul>" : '<p style="margin:0;font-weight:600">Todavía nada. Cuando termine la primera lección, aquí verán cada palabra que aprendió.</p>') + "</div>" +
+      '<div class="panel"><h3>Misión para hacer juntos</h3><p style="margin:0;font-weight:600">Abran una IA (ChatGPT, Gemini o Claude) y pídanle juntos un cuento sobre su mascota o su juguete favorito. Primero con una orden corta, luego con 3 detalles más. ¿Cuál quedó mejor y por qué?</p></div>' +
+      '<div class="panel"><h3>Cuidamos a su hijo</h3><ul><li>No pedimos nombre, correo ni foto del niño.</li><li>En la app no chatea con una IA real: las respuestas de Bit están escritas por nosotros.</li><li>Máximo 3 lecciones al día para que no pase horas en la pantalla.</li></ul></div>' +
+      '<div class="panel"><h3>Planes</h3><div class="precio"><b>Gratis</b><span>Mundos 1 y 2 completos</span></div><div class="precio"><b>Familia · 69 MXN/mes</b><span>o 499 al año</span></div><div class="precio"><b>Lanzamiento · 299 MXN</b><span>pago único, para siempre</span></div></div>' +
+      '<div class="cuatro"><button class="boton uva" data-instalar>📲 Instalar app</button><button class="boton sec" data-reiniciar>Reiniciar</button></div>';
+  }
+
+  $("#app").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    if (b.dataset.lec) {
+      if (b.dataset.lec === "l1") return empezarLeccion();
+      return toast(b.closest(".nodo").classList.contains("activo") ? "Esta lección llega en la app completa" : "Termina la lección anterior para abrirla");
+    }
+    if (b.dataset.mundo) return toast(MUNDOS[+b.dataset.mundo].gratis ? "Se abre al terminar la Isla Chispa" : "Disponible con el plan Familia");
+    if (b.dataset.carta) {
+      var c = CARTAS.filter(function (x) { return x.id === b.dataset.carta; })[0];
+      if (S.cartas.indexOf(c.id) < 0) return toast(c.luego ? "Esta carta se gana en otro mundo" : "Juega la lección 1 para ganarla");
+      return verCarta(c);
+    }
+    if (b.dataset.color) { S.color = b.dataset.color; guardar(); sonido("bien"); return pintar(); }
+    if (b.dataset.acc) {
+      if (S.estrellas < +b.dataset.min) return toast("Te faltan " + (+b.dataset.min - S.estrellas) + " ⭐ para esto");
+      S.acc = b.dataset.acc; guardar(); sonido("bien"); return pintar();
+    }
+    if (b.dataset.pin) { if (b.dataset.pin === "56") { papasAbierto = true; pintar(); } else { toast("Esa no es. Pídele ayuda a un adulto."); } return; }
+    if (b.dataset.instalar !== undefined) return preguntar("Instalar IAventura", "En la app real, este botón la pone en la pantalla de inicio del celular, como cualquier app y sin Play Store. En iPhone: Compartir → Agregar a inicio.", "Entendido", "Cerrar", function () {});
+    if (b.dataset.reiniciar !== undefined) return preguntar("¿Reiniciar el avance?", "Se borran las estrellas, las cartas y lo que tiene Bit en este celular.", "Sí, reiniciar", "No, dejarlo así", function () {
+      S = { estrellas: 0, hechas: {}, cartas: [], color: "#2ec4d6", acc: "antena", dias: [] }; guardar(); papasAbierto = false; ir("mapa");
+    });
+  });
+
+  function verCarta(c) {
+    var v = h('<div class="velo" style="place-items:center"><div class="hoja" style="text-align:center"><div class="carta-zona"><div class="carta vuelta"><div class="cara atras">?</div><div class="cara frente"><span class="em">' + c.em + "</span><h3>" + esc(c.t) + "</h3><p>" + esc(c.d) + '</p></div></div></div><button class="boton sec" data-hablar>🔊 Escuchar</button><button class="boton">Cerrar</button></div></div>');
+    v.addEventListener("click", function (e) {
+      var b = e.target.closest("button");
+      if (b && b.dataset.hablar !== undefined) return hablar(c.t + ". " + c.d);
+      if (b || e.target === v) v.remove();
+    });
+    document.body.appendChild(v);
+  }
+
+  // ---------- Lección 1: Conoce a Bit ----------
+  var L = null; // estado de la lección en curso
+
+  var PASOS = [
+    { tipo: "historia", lineas: [
+      "¡Bip bip! Hola… acabo de despertar y no sé casi nada. 😳",
+      "Me llamo Bit. Soy una inteligencia artificial y aprendo de lo que me enseñan.",
+      "¿Me ayudas? Tú vas a ser mi maestro. ¡Vamos a jugar!"
+    ], fin: "¡Sí, te ayudo!" },
+    { tipo: "iaono", items: [
+      { em: "🧮", t: "Una calculadora", ia: false, por: "Solo sigue reglas fijas: 2 + 2 siempre da 4. No aprende nada nuevo." },
+      { em: "🎬", t: "La app que te recomienda videos", ia: true, por: "Aprende qué te gusta viendo los videos que miras." },
+      { em: "🔦", t: "Una linterna", ia: false, por: "Prende y apaga. No piensa ni aprende." },
+      { em: "🗣️", t: "Un asistente que entiende tu voz", ia: true, por: "Aprendió a entender palabras escuchando muchísimas voces." },
+      { em: "📸", t: "Una cámara que encuentra caras", ia: true, por: "Vio miles de fotos de caras hasta aprender cómo es una." }
+    ] },
+    { tipo: "carta", id: "ia" },
+    { tipo: "entrena" },
+    { tipo: "carta", id: "datos" },
+    { tipo: "orden" },
+    { tipo: "carta", id: "prompt" },
+    { tipo: "verdad", items: [
+      { t: "Los pulpos tienen tres corazones.", v: true, por: "¡Es verdad! Dos bombean sangre a las branquias y uno al resto del cuerpo." },
+      { t: "La Luna está hecha de queso.", v: false, por: "Me lo inventé. Cuando una IA dice algo falso muy segura, se llama alucinación." },
+      { t: "El Sol es una estrella.", v: true, por: "¡Correcto! Es la estrella más cercana a la Tierra." },
+      { t: "Los perros vuelan si comen muchas zanahorias.", v: false, por: "¡Otro invento mío! Por eso siempre revisa lo que dice una IA." }
+    ] },
+    { tipo: "carta", id: "alucina" },
+    { tipo: "historia", lineas: [
+      "¡Wow! Hoy me enseñaste qué es una IA, cómo aprendo con datos, a darme buenas órdenes y a no creerme todo.",
+      "Mañana te espero en la siguiente lección. ¡Gracias, maestro!"
+    ], fin: "Ver mis premios", animo: "wow" }
+  ];
+
+  function empezarLeccion() {
+    L = { paso: 0, errores: 0, nuevas: [] };
+    var cont = h('<div class="leccion" id="leccion"><div class="lec-in"><div class="lec-top"><button class="cerrar" aria-label="Salir de la lección">✕</button><div class="barra">' + PASOS.map(function () { return "<i></i>"; }).join("") + '</div></div><div class="escena" id="escena"></div></div></div>');
+    cont.querySelector(".cerrar").addEventListener("click", function () {
+      preguntar("¿Salir de la lección?", "Bit se queda esperándote. Lo que llevas de esta lección no se guarda.", "Sí, salir", "Seguir jugando", function () { cont.remove(); L = null; pintar(); });
+    });
+    document.body.appendChild(cont);
+    document.body.style.overflow = "hidden";
+    pasoActual();
+  }
+
+  function siguiente() { L.paso++; if (L.paso >= PASOS.length) return terminar(); pasoActual(); }
+
+  function pasoActual() {
+    var barra = document.querySelectorAll("#leccion .barra i");
+    barra.forEach(function (b, i) { b.className = i < L.paso ? "ya" : i === L.paso ? "ahora" : ""; });
+    var p = PASOS[L.paso], esc_ = $("#escena");
+    esc_.innerHTML = "";
+    $("#leccion").scrollTop = 0;
+    ({ historia: pHistoria, iaono: pIaONo, carta: pCarta, entrena: pEntrena, orden: pOrden, verdad: pVerdad })[p.tipo](p, esc_);
+  }
+
+  function globo(texto, animo, grande) {
+    return '<div class="dialogo' + (grande ? " grande" : "") + '">' + bitEl(animo || "feliz", "brinca") + '<div class="globo"><span class="txt">' + esc(texto) + '</span><button class="hablar" aria-label="Escuchar">🔊</button></div></div>';
+  }
+  function engancharVoz(cont) {
+    cont.querySelectorAll(".hablar").forEach(function (b) { b.addEventListener("click", function () { hablar(b.parentNode.querySelector(".txt").textContent); }); });
+  }
+
+  function pHistoria(p, el) {
+    var i = 0;
+    function dibujar() {
+      var ultima = i === p.lineas.length - 1;
+      el.innerHTML = '<div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px">' + globo(p.lineas[i], i === 0 && !p.animo ? "wow" : (p.animo || "feliz"), true) + '</div><div class="abajo"><button class="boton' + (ultima ? " uva" : "") + '">' + esc(ultima ? p.fin : "Siguiente") + "</button></div>";
+      engancharVoz(el);
+      el.querySelector(".abajo .boton").addEventListener("click", function () { if (ultima) siguiente(); else { i++; dibujar(); } });
+    }
+    dibujar();
+  }
+
+  function pIaONo(p, el) {
+    var i = 0;
+    function dibujar() {
+      var it = p.items[i];
+      el.innerHTML = '<div class="tipo">Minijuego · ¿IA o no IA? · ' + (i + 1) + " de " + p.items.length + "</div>" +
+        globo("¿Esto es una inteligencia artificial?", "piensa") +
+        '<div class="objeto"><div class="em">' + it.em + '</div><div class="t">' + esc(it.t) + "</div></div>" +
+        '<div class="dos"><button class="op a" data-r="1"><span>🤖</span>Es IA</button><button class="op b" data-r="0"><span>🔧</span>No es IA</button></div><div id="fb"></div>';
+      engancharVoz(el);
+      el.querySelectorAll(".op").forEach(function (b) {
+        b.addEventListener("click", function () {
+          var ok = (b.dataset.r === "1") === it.ia;
+          el.querySelectorAll(".op").forEach(function (x) { x.disabled = true; });
+          if (!ok) L.errores++;
+          sonido(ok ? "bien" : "mal");
+          var fb = $("#fb", el);
+          fb.innerHTML = '<div class="aviso ' + (ok ? "bien" : "mal") + '"><b>' + (ok ? "¡Bien! " : "Casi… ") + (it.ia ? "Sí es IA." : "No es IA.") + "</b>" + esc(it.por) + '</div><div class="abajo"><button class="boton">' + (i < p.items.length - 1 ? "Otra" : "Seguir") + "</button></div>";
+          fb.querySelector(".boton").addEventListener("click", function () { if (i < p.items.length - 1) { i++; dibujar(); } else siguiente(); });
+          fb.scrollIntoView({ behavior: "smooth", block: "end" });
+        });
+      });
+    }
+    dibujar();
+  }
+
+  function pCarta(p, el) {
+    var c = CARTAS.filter(function (x) { return x.id === p.id; })[0];
+    var nueva = S.cartas.indexOf(c.id) < 0 && L.nuevas.indexOf(c.id) < 0;
+    el.innerHTML = '<div class="tipo">' + (nueva ? "¡Carta de poder nueva!" : "Carta de poder") + '</div><h2>Toca la carta para darle la vuelta</h2>' +
+      '<div class="carta-zona"><button class="carta" aria-label="Voltear carta"><div class="cara atras">?</div><div class="cara frente"><span class="n">IAVENTURA · ' + String(CARTAS.indexOf(c) + 1).padStart(2, "0") + '</span><span class="em">' + c.em + "</span><h3>" + esc(c.t) + "</h3><p>" + esc(c.d) + "</p></div></button></div>" +
+      '<div class="abajo"><button class="boton sec" data-h>🔊 Escuchar</button><button class="boton uva" disabled data-g>¡La guardo en mi álbum!</button></div>';
+    var carta = el.querySelector(".carta");
+    carta.addEventListener("click", function () {
+      if (carta.classList.contains("vuelta")) return;
+      carta.classList.add("vuelta"); sonido("carta");
+      el.querySelector("[data-g]").disabled = false;
+      if (L.nuevas.indexOf(c.id) < 0 && S.cartas.indexOf(c.id) < 0) L.nuevas.push(c.id);
+    });
+    el.querySelector("[data-h]").addEventListener("click", function () { hablar(c.t + ". " + c.d); });
+    el.querySelector("[data-g]").addEventListener("click", siguiente);
+  }
+
+  function pEntrena(p, el) {
+    var FICHAS = [["🐶", 1, "perro"], ["🚗", 0, "coche"], ["🐱", 1, "gato"], ["🍕", 0, "pizza"], ["⚽", 0, "balón"], ["🐸", 1, "rana"], ["🌵", 0, "cactus"], ["🦜", 1, "perico"]];
+    var sel = {};
+    function dibujar() {
+      el.innerHTML = '<div class="tipo">Minijuego · Entrena a Bit</div>' +
+        globo("Quiero aprender qué es un ANIMAL. Toca todos los animales para enseñarme con ejemplos.", "piensa") +
+        '<div class="rejilla">' + FICHAS.map(function (f, i) { return '<button class="ficha' + (sel[i] ? " sel" : "") + '" data-i="' + i + '" aria-pressed="' + !!sel[i] + '" aria-label="' + f[2] + '">' + f[0] + "</button>"; }).join("") + "</div>" +
+        '<div class="abajo"><button class="boton" data-ent ' + (Object.keys(sel).length ? "" : "disabled") + ">Enseñarle a Bit (" + Object.keys(sel).length + ")</button></div>";
+      engancharVoz(el);
+      el.querySelectorAll(".ficha").forEach(function (b) {
+        b.addEventListener("click", function () { var i = b.dataset.i; if (sel[i]) delete sel[i]; else sel[i] = 1; dibujar(); });
+      });
+      el.querySelector("[data-ent]").addEventListener("click", probar);
+    }
+    function probar() {
+      var malas = Object.keys(sel).filter(function (i) { return !FICHAS[i][1]; });
+      var buenas = Object.keys(sel).filter(function (i) { return FICHAS[i][1]; });
+      el.innerHTML = '<div class="tipo">Minijuego · Entrena a Bit</div>' + globo("Mmm… aprendiendo… ahora mira esta foto nueva…", "piensa") +
+        '<div class="objeto"><div class="em">🐢</div><div class="t">¿Qué es esto?</div></div>';
+      el.querySelector(".bit").classList.add("piensa");
+      setTimeout(function () {
+        var html, ok = false;
+        if (malas.length) {
+          var m = FICHAS[malas[0]];
+          L.errores++; sonido("mal");
+          html = globo("¡Ya sé! Un animal es algo como… ¡una " + m[2] + "! " + m[0] + " ¿La tortuga es " + m[2] + "?", "ups") +
+            '<div class="aviso mal"><b>¡Bit aprendió chueco!</b>Le enseñaste que ' + (m[2] === "pizza" || m[2] === "rana" ? "la " : "el ") + m[2] + " es un animal. Una IA aprende de los ejemplos (los <b style=\"display:inline;font-size:inherit\">datos</b>) que le das. Si los datos están mal, aprende mal.</div>" +
+            '<div class="abajo"><button class="boton" data-otra>Volver a enseñarle</button></div>';
+        } else if (buenas.length < 4) {
+          L.errores++; sonido("mal");
+          html = globo("Mmm… ¿una piedra verde con patas? No estoy seguro.", "ups") +
+            '<div class="aviso mal"><b>Le faltaron ejemplos</b>Solo le enseñaste ' + buenas.length + " de los 4 animales. Entre más ejemplos buenos le das a una IA, mejor aprende.</div>" +
+            '<div class="abajo"><button class="boton" data-otra>Darle más ejemplos</button></div>';
+        } else {
+          ok = true; sonido("bien");
+          html = globo("¡Es un ANIMAL! 🐢 Una tortuga. Nunca la había visto, pero aprendí con tus ejemplos.", "wow") +
+            '<div class="aviso bien"><b>¡Lo entrenaste!</b>Así aprenden las IA de verdad: les muestran muchos ejemplos (datos) y descubren el patrón solas.</div>' +
+            '<div class="abajo"><button class="boton">Seguir</button></div>';
+        }
+        el.innerHTML = '<div class="tipo">Minijuego · Entrena a Bit</div>' + html;
+        engancharVoz(el);
+        var b = el.querySelector(".abajo .boton");
+        b.addEventListener("click", function () { if (ok) siguiente(); else { sel = {}; dibujar(); } });
+      }, 1300);
+    }
+    dibujar();
+  }
+
+  function pOrden(p, el) {
+    var FILAS = [
+      { q: "¿Sobre quién es el cuento?", ops: ["algo", "un perro", "Pipo, un perro astronauta"] },
+      { q: "¿Para quién es?", ops: ["para nadie en especial", "para un niño", "para mi hermanita de 8 años"] },
+      { q: "¿Cómo lo quieres?", ops: ["como sea", "cortito", "cortito, chistoso y con final feliz"] }
+    ];
+    var el_ = [null, null, null];
+    function dibujar() {
+      var listo = el_.every(function (x) { return x !== null; });
+      el.innerHTML = '<div class="tipo">Minijuego · Arma la orden</div>' +
+        globo("¡Quiero escribirte un cuento! Pero dime bien qué quieres. Elige una opción de cada grupo.", "feliz") +
+        FILAS.map(function (f, r) {
+          return '<div class="fila"><div class="q">' + esc(f.q) + '</div><div class="chips">' + f.ops.map(function (o, k) { return '<button class="chip' + (el_[r] === k ? " sel" : "") + '" data-r="' + r + '" data-k="' + k + '">' + esc(o) + "</button>"; }).join("") + "</div></div>";
+        }).join("") +
+        '<div class="abajo"><button class="boton uva" data-dar ' + (listo ? "" : "disabled") + ">Darle la orden a Bit</button></div>";
+      engancharVoz(el);
+      el.querySelectorAll(".chip").forEach(function (b) { b.addEventListener("click", function () { el_[+b.dataset.r] = +b.dataset.k; dibujar(); }); });
+      el.querySelector("[data-dar]").addEventListener("click", resultado);
+    }
+    function resultado() {
+      var punt = el_[0] + el_[1] + el_[2];
+      var est = punt <= 2 ? 1 : punt <= 4 ? 2 : 3;
+      var orden = "Escribe un cuento sobre " + FILAS[0].ops[el_[0]] + ", " + FILAS[1].ops[el_[1]] + ", " + FILAS[2].ops[el_[2]] + ".";
+      var cuento = [
+        "Había una vez… algo. Y ese algo hizo cosas. Fin.",
+        "Había una vez un perro que vivía en una casa. Un día ladró. Fin.",
+        "Pipo, el perro astronauta, se puso su casco y despegó hacia la Luna para buscar el hueso más grande del universo."
+      ][el_[0]];
+      if (el_[2] === 2) cuento += el_[0] === 2 ? " ¡Lo encontró y era de queso lunar! Regresó a casa y lo compartió con todos sus amigos. 🚀🦴" : " Y al final todos se rieron mucho y fueron felices. 😄";
+      if (el_[2] === 0) cuento += " Luego pasó otra cosa. Y otra. Y otra más. Y otra…";
+      if (est < 3) L.errores++;
+      sonido(est === 3 ? "bien" : "mal");
+      el.innerHTML = '<div class="tipo">Minijuego · Arma la orden</div>' +
+        '<div class="orden"><small>Tu orden (prompt)</small>' + esc(orden) + "</div>" +
+        globo(est === 3 ? "¡Con esa orden sí supe qué hacer!" : "Hice lo que pude con lo que me dijiste…", est === 3 ? "wow" : "ups") +
+        '<div class="cuento">' + esc(cuento) + "</div>" +
+        '<div class="estrellas" aria-label="' + est + ' de 3 estrellas">' + [1, 2, 3].map(function (n) { return n <= est ? "⭐" : '<span class="no">⭐</span>'; }).join("") + "</div>" +
+        '<div class="aviso ' + (est === 3 ? "bien" : "mal") + '"><b>' + (est === 3 ? "¡Orden perfecta!" : "Le faltaron detalles") + "</b>" + (est === 3 ? "Dijiste sobre quién, para quién y cómo. Así se le habla a una IA." : "Entre más clara y detallada la orden, mejor responde la IA. Prueba eligiendo las opciones con más detalles.") + "</div>" +
+        '<div class="abajo">' + (est < 3 ? '<button class="boton uva" data-mejorar>Mejorar mi orden</button>' : "") + '<button class="boton' + (est < 3 ? " sec" : "") + '" data-seguir>Seguir</button></div>';
+      engancharVoz(el);
+      var m = el.querySelector("[data-mejorar]"); if (m) m.addEventListener("click", dibujar);
+      el.querySelector("[data-seguir]").addEventListener("click", siguiente);
+    }
+    dibujar();
+  }
+
+  function pVerdad(p, el) {
+    var i = 0;
+    function dibujar() {
+      var it = p.items[i];
+      el.innerHTML = '<div class="tipo">Minijuego · ¿Verdad o invento? · ' + (i + 1) + " de " + p.items.length + "</div>" +
+        globo(it.t, "feliz", true) +
+        '<p style="margin:0;font-weight:700;color:var(--tinta2);text-align:center">A veces Bit inventa cosas. ¿Esto es cierto?</p>' +
+        '<div class="dos"><button class="op a" data-r="1"><span>✅</span>Es verdad</button><button class="op b" data-r="0"><span>🌀</span>Bit lo inventó</button></div><div id="fb"></div>';
+      engancharVoz(el);
+      el.querySelectorAll(".op").forEach(function (b) {
+        b.addEventListener("click", function () {
+          var ok = (b.dataset.r === "1") === it.v;
+          el.querySelectorAll(".op").forEach(function (x) { x.disabled = true; });
+          if (!ok) L.errores++;
+          sonido(ok ? "bien" : "mal");
+          var fb = $("#fb", el);
+          fb.innerHTML = '<div class="aviso ' + (ok ? "bien" : "mal") + '"><b>' + (ok ? "¡Me cachaste!" : "¡Te engañé!") + "</b>" + esc(it.por) + '</div><div class="abajo"><button class="boton">' + (i < p.items.length - 1 ? "Otra" : "Seguir") + "</button></div>";
+          if (ok && it.v) fb.querySelector("b").textContent = "¡Bien!";
+          fb.querySelector(".boton").addEventListener("click", function () { if (i < p.items.length - 1) { i++; dibujar(); } else siguiente(); });
+          fb.scrollIntoView({ behavior: "smooth", block: "end" });
+        });
+      });
+    }
+    dibujar();
+  }
+
+  function terminar() {
+    var est = L.errores <= 1 ? 3 : L.errores <= 4 ? 2 : 1;
+    var antes = S.hechas.l1 || 0;
+    var ganadas = Math.max(0, est - antes);
+    S.hechas.l1 = Math.max(antes, est);
+    S.estrellas += ganadas;
+    L.nuevas.forEach(function (id) { if (S.cartas.indexOf(id) < 0) S.cartas.push(id); });
+    marcarDia(); guardar();
+    var desbloq = ACCS.filter(function (a) { return a[3] > S.estrellas - ganadas && a[3] <= S.estrellas && a[3] > 0; });
+    var nuevas = CARTAS.filter(function (c) { return L.nuevas.indexOf(c.id) >= 0; });
+    var el = $("#escena");
+    document.querySelectorAll("#leccion .barra i").forEach(function (b) { b.className = "ya"; });
+    el.innerHTML = '<div class="final" style="display:grid;gap:14px">' + bitEl("wow", "brinca") +
+      "<h2>¡Lección completa!</h2>" +
+      '<div class="estrellas" aria-label="' + est + ' de 3 estrellas">' + [1, 2, 3].map(function (n) { return n <= est ? "⭐" : '<span class="no">⭐</span>'; }).join("") + "</div>" +
+      (ganadas ? '<p style="margin:0;font-weight:800">Ganaste ' + ganadas + " ⭐ para el taller de Bit" + (desbloq.length ? " y desbloqueaste: " + desbloq.map(function (a) { return a[1] + " " + a[2]; }).join(", ") : "") + "</p>" : '<p style="margin:0;font-weight:700;color:var(--tinta2)">Ya tenías estas estrellas. ¡Buen repaso!</p>') +
+      (nuevas.length ? '<div class="gana">' + nuevas.map(function (c) { return '<div class="mini"><span class="em">' + c.em + "</span><b>" + esc(c.t) + "</b></div>"; }).join("") + "</div>" : "") +
+      '<div class="mision"><small>Misión de la vida real</small>Con un adulto, pídele a una IA un cuento sobre tu mascota o tu juguete favorito. Primero con una orden cortita… y luego con 3 detalles más. ¿Cuál quedó mejor?</div>' +
+      '<p style="margin:0;font-weight:700;color:var(--tinta2)">🔋 A Bit le quedan 2 lecciones de batería por hoy.</p>' +
+      '<div class="abajo"><button class="boton uva" data-mapa>Volver al mapa</button></div></div>';
+    el.querySelector("[data-mapa]").addEventListener("click", function () {
+      $("#leccion").remove(); document.body.style.overflow = ""; L = null; vista = "mapa"; pintar(); window.scrollTo(0, 0);
+    });
+    sonido("carta"); confeti();
+  }
+
+  // ---------- Confeti ----------
+  function confeti() {
+    if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var cv = $("#confeti"), cx = cv.getContext("2d"); cv.hidden = false;
+    cv.width = innerWidth; cv.height = innerHeight;
+    var cols = ["#ffc531", "#ff5c8a", "#2fcf85", "#2ec4d6", "#7b61ff"];
+    var ps = []; for (var i = 0; i < 140; i++) ps.push({ x: Math.random() * cv.width, y: -20 - Math.random() * cv.height * 0.5, vx: (Math.random() - .5) * 3, vy: 2 + Math.random() * 4, r: 4 + Math.random() * 6, c: cols[i % 5], a: Math.random() * 6 });
+    var t = 0;
+    (function cuadro() {
+      cx.clearRect(0, 0, cv.width, cv.height);
+      ps.forEach(function (p) { p.x += p.vx; p.y += p.vy; p.a += .1; cx.save(); cx.translate(p.x, p.y); cx.rotate(p.a); cx.fillStyle = p.c; cx.fillRect(-p.r / 2, -p.r / 4, p.r, p.r / 2); cx.restore(); });
+      if (++t < 170) requestAnimationFrame(cuadro); else { cx.clearRect(0, 0, cv.width, cv.height); cv.hidden = true; }
+    })();
+  }
+
+  pintar();
+})();
+</script>
