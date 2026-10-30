@@ -16,7 +16,7 @@ export const CARTAS: Carta[] = [
   { id: "patron", em: "🧩", t: "Patrón", d: "Algo que se repite en los ejemplos. La IA busca patrones para adivinar.", mundo: 2 },
   { id: "etiqueta", em: "🏷️", t: "Etiqueta", d: "El nombre que le ponemos a un ejemplo para que la IA sepa qué es: 'perro', 'gato'.", mundo: 2 },
   { id: "sesgo", em: "⚖️", t: "Sesgo", d: "Cuando la IA es injusta o se equivoca con alguien porque aprendió de datos incompletos.", mundo: 2 },
-  // Mundos que siguen (se ganan en la app completa)
+  // Mundo 3 · Ciudad Prompt
   { id: "instruccion", em: "📣", t: "Instrucción clara", d: "Decirle a la IA exactamente qué quieres, paso por paso, sin dejarla adivinar.", mundo: 3 },
   { id: "contexto", em: "🧭", t: "Contexto", d: "La información extra que le das a la IA para que entienda mejor qué quieres.", mundo: 3 },
   { id: "ejemplo", em: "🎯", t: "Ejemplo", d: "Mostrarle a la IA una muestra de cómo quieres el resultado. Con un ejemplo, acierta más.", mundo: 3 },
@@ -36,6 +36,10 @@ export const CARTAS: Carta[] = [
   { id: "imagen", em: "🖼️", t: "Generador de imágenes", d: "Una IA que dibuja lo que le describes con palabras. Entre más detalles, más se parece a lo que imaginas.", mundo: 6 },
   { id: "chatbot", em: "🤖", t: "Chatbot", d: "Una IA con la que puedes platicar escribiendo o hablando.", mundo: 6 },
   { id: "autor", em: "✍️", t: "Autor", d: "La persona que hace una obra. Si una IA te ayudó, se dice. Copiar el trabajo de otro sin decirlo no se vale.", mundo: 6 },
+  // Mundo 7 · Torre de los Superpoderes
+  { id: "tutor", em: "🧑‍🏫", t: "Tutor de IA", d: "Una IA que te explica paso a paso hasta que entiendes. Te ayuda a aprender, pero la tarea la haces tú.", mundo: 7 },
+  { id: "traductor", em: "🌍", t: "Traductor", d: "Una IA que pasa palabras de un idioma a otro al instante. Sirve para entender y para aprender, no para dejar de aprender.", mundo: 7 },
+  { id: "superpoder", em: "🦸", t: "Superpoder", d: "Usar la IA para hacer más con tus propias ideas: aprender, crear y revisar. El superpoder eres tú; la IA es la herramienta.", mundo: 7 },
 ];
 
 export function carta(id: string): Carta {
