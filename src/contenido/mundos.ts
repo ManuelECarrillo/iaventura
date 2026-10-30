@@ -42,7 +42,16 @@ export const MUNDOS: Mundo[] = [
       { id: "m4-l5", em: "👑", nombre: "Jefe del pantano", minutos: 5, jefe: true },
     ],
   },
-  { id: 5, em: "🏰", nombre: "Fortaleza Guardiana", historia: "Cuidar secretos y datos", gratis: false, lecciones: [] },
+  {
+    id: 5, em: "🏰", nombre: "Fortaleza Guardiana", historia: "Cuidar secretos y datos", gratis: false,
+    lecciones: [
+      { id: "m5-l1", em: "🔒", nombre: "Lo que no se cuenta", minutos: 4 },
+      { id: "m5-l2", em: "🔑", nombre: "La llave secreta", minutos: 4 },
+      { id: "m5-l3", em: "🙋", nombre: "Pregunta primero", minutos: 4 },
+      { id: "m5-l4", em: "🤖", nombre: "Bit no es una persona", minutos: 4 },
+      { id: "m5-l5", em: "👑", nombre: "Jefe de la fortaleza", minutos: 5, jefe: true },
+    ],
+  },
   { id: 6, em: "🎨", nombre: "Estudio Creativo", historia: "Dibujos, cuentos y música con IA", gratis: false, lecciones: [] },
   { id: 7, em: "🗼", nombre: "Torre de los Superpoderes", historia: "Usar la IA para estudiar y crear", gratis: false, lecciones: [] },
 ];

@@ -27,7 +27,10 @@ export const CARTAS: Carta[] = [
   { id: "fuente", em: "📚", t: "Fuente", d: "De dónde sale una información. Una buena fuente se puede revisar.", mundo: 4 },
   { id: "deepfake", em: "🪞", t: "Deepfake", d: "Un video o foto falsos hechos con IA que parecen reales. ¡Ojo!", mundo: 4 },
   { id: "fake", em: "📰", t: "Noticia falsa", d: "Una noticia inventada para que la compartas rápido. Se revisa antes de creerla.", mundo: 4 },
+  // Mundo 5 · Fortaleza Guardiana
   { id: "privacidad", em: "🔒", t: "Privacidad", d: "Cuidar tus datos: hay cosas que no se le cuentan a ninguna IA.", mundo: 5 },
+  { id: "contrasena", em: "🔑", t: "Contraseña", d: "La llave secreta de tus cuentas. No se le dice a nadie, ni a una IA. Solo a tus papás.", mundo: 5 },
+  { id: "permiso", em: "🙋", t: "Pedir permiso", d: "Antes de usar una IA nueva, mandar una foto o comprar algo, se le pregunta a un adulto de confianza.", mundo: 5 },
   { id: "generativa", em: "🎨", t: "IA generativa", d: "Una IA que crea cosas nuevas: dibujos, cuentos, música.", mundo: 6 },
   { id: "chatbot", em: "🤖", t: "Chatbot", d: "Una IA con la que puedes platicar escribiendo o hablando.", mundo: 6 },
 ];
